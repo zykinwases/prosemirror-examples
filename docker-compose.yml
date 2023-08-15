@@ -1,0 +1,34 @@
+version: '0.1'
+services:
+
+  react:
+    build:
+      context: rich-text-editor
+      dockerfile: Dockerfile
+
+    restart: on-failure
+
+    tty: true
+    ports: 
+      - "3000:3000"
+
+    entrypoint:
+      yarn run start
+
+  api:
+    build:
+      context: api
+      dockerfile: Dockerfile
+
+    environment:
+      PYTHONUNBUFFERED: 1
+      PYTHONIOENCODING: utf-8
+
+    restart: on-failure
+
+    tty: true
+    ports: 
+      - "8000:8000"
+
+    entrypoint:
+      python3 main.py --log=INFO
