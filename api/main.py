@@ -2,8 +2,12 @@ import uvicorn
 from fastapi import FastAPI
 import os
 import json
+from pydantic import BaseModel
 
 app = FastAPI()
+
+class Document(BaseModel):
+    document: dict
 
 @app.get("/")
 async def root():
@@ -14,15 +18,15 @@ async def get_config():
     if os.path.isfile(f"{os.path.dirname(__file__)}/import.json"):
         with open(f"{os.path.dirname(__file__)}/import.json") as f:
             doc = json.load(f)
-            print(doc)
     else:
         doc = None
     return {"document": doc}
 
 @app.post("/api/save_document")
-async def save_document(document):
+async def save_document(document: Document):
+    print(document)
     with open(f"{os.path.dirname(__file__)}/import.json", "w") as file:
-        json.dump(document, file)
+        json.dump(document.document, file)
     return
 
 if __name__ == "__main__":
